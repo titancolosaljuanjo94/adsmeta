@@ -95,7 +95,7 @@ with st.sidebar:
     generation_mode = st.radio("Generar para", ["Solo 1 carrera", "Varias carreras"])
 
     # 👇 línea informativa (ya sin uploader ni input de URL)
-st.caption("Fuente: ZIP preconfigurado (ZIP_URL en Secrets).")
+    st.caption("Fuente: ZIP preconfigurado (ZIP_URL en Secrets).")
     st.markdown("---")
     st.caption("Estado de API:")
     if api_configured:
