@@ -75,6 +75,7 @@ def list_pdfs(zb: bytes) -> List[str]:
 # =========================
 
 # API key desde entorno o Secrets
+# =========================
 api_key = os.environ.get("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY", None)
 if api_key:
     os.environ["OPENAI_API_KEY"] = api_key  # para que el SDK la use
@@ -93,11 +94,8 @@ with st.sidebar:
 
     generation_mode = st.radio("Generar para", ["Solo 1 carrera", "Varias carreras"])
 
-    st.markdown("---")
-    st.caption("Fuente de PDFs")
-    uploaded = st.file_uploader("Sube tu .zip con PDFs por carrera", type=["zip"], help="Alternativa: define ZIP_URL en Secrets")
-    zip_url = st.text_input("ZIP_URL (opcional, si no subes archivo)", value=st.secrets.get("ZIP_URL", ""))
-
+    # 👇 línea informativa (ya sin uploader ni input de URL)
+st.caption("Fuente: ZIP preconfigurado (ZIP_URL en Secrets).")
     st.markdown("---")
     st.caption("Estado de API:")
     if api_configured:
@@ -105,22 +103,22 @@ with st.sidebar:
     else:
         st.warning("Falta OPENAI_API_KEY (añádela en Settings → Secrets)")
 
+
+
+# CARGA DEL ZIP (automática con ZIP_URL desde Secrets/entorno)
 # =========================
-# CARGA DEL ZIP
-# =========================
-zip_bytes = None
-if uploaded is not None:
-    zip_bytes = uploaded.read()
-elif zip_url:
+zip_url = os.environ.get("ZIP_URL") or st.secrets.get("ZIP_URL", "")
+if not zip_url:
+    st.error("Falta ZIP_URL en Secrets. Ve a Settings → Secrets y agrega ZIP_URL con tu enlace de Google Drive.")
+    st.stop()
+
+with st.spinner("Descargando ZIP desde ZIP_URL..."):
     try:
-        with st.spinner("Descargando ZIP desde ZIP_URL..."):
-            zip_bytes = fetch_zip_from_url(zip_url)
+        zip_bytes = fetch_zip_from_url(zip_url)
     except Exception as e:
         st.error(f"No se pudo descargar el ZIP desde ZIP_URL: {e}")
         st.stop()
-else:
-    st.info("Sube un ZIP o configura ZIP_URL en Secrets para continuar.")
-    st.stop()
+
 
 pdf_paths = list_pdfs(zip_bytes)
 if not pdf_paths:
