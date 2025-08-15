@@ -21,6 +21,7 @@ except Exception:
 st.set_page_config(page_title="Generador de Metadescripciones", page_icon="🧩", layout="wide")
 
 st.title("Generador de Metadescripciones (4 por carrera)")
+st.markdown("<p style='text-align: center; color: #666; font-size: 14px; margin-top: -10px;'>Herramienta creada por Juan José Quintana</p>", unsafe_allow_html=True)
 st.caption("Sube tu ZIP de PDFs o configura una ZIP_URL en Secrets. Elige la carrera y el tono, y genera 4 metadescripciones optimizadas para Ads.")
 
 # === Rango estricto de caracteres para cada metadescripción ===
